@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory Management System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f6f9;
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+            color: #007bff;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .form-container, .inventory-table {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        label {
+            font-weight: bold;
+        }
+        input[type="text"], input[type="number"] {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin: 5px 0 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            padding: 10px 15px;
+            border: none;
+            background-color: #007bff;
+            color: #fff;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px 0;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #007bff;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Inventory Management System</h1>
+        <div class="form-container">
+            <label for="productId">Product ID:</label>
+            <input type="number" id="productId" required>
+
+            <label for="productName">Product Name:</label>
+            <input type="text" id="productName" required>
+
+            <label for="quantity">Quantity:</label>
+            <input type="number" id="quantity" required>
+
+            <label for="price">Price:</label>
+            <input type="number" step="0.01" id="price" required>
+
+            <button onclick="addProduct()">Add Product</button>
+            <button onclick="updateQuantity()">Update Quantity</button>
+            <button onclick="removeProduct()">Remove Product</button>
+        </div>
+
+        <div class="inventory-table">
+            <h2>Inventory</h2>
+            <table id="inventoryTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        class Product {
+            constructor(id, name, quantity, price) {
+                this.id = id;
+                this.name = name;
+                this.quantity = quantity;
+                this.price = price;
+            }
+        }
+
+        const inventory = [];
+
+        function addProduct() {
+            const id = document.getElementById("productId").value;
+            const name = document.getElementById("productName").value;
+            const quantity = parseInt(document.getElementById("quantity").value, 10);
+            const price = parseFloat(document.getElementById("price").value);
+
+            if (inventory.find(p => p.id == id)) {
+                alert("Product with this ID already exists.");
+            } else {
+                const newProduct = new Product(id, name, quantity, price);
+                inventory.push(newProduct);
+                alert("Product added successfully!");
+                displayInventory();
+            }
+        }
+
+        function updateQuantity() {
+            const id = document.getElementById("productId").value;
+            const quantity = parseInt(document.getElementById("quantity").value, 10);
+            const product = inventory.find(p => p.id == id);
+
+            if (product) {
+                product.quantity = quantity;
+                alert("Quantity updated successfully!");
+                displayInventory();
+            } else {
+                alert("Product with this ID not found.");
+            }
+        }
+
+        function removeProduct() {
+            const id = document.getElementById("productId").value;
+            const index = inventory.findIndex(p => p.id == id);
+
+            if (index > -1) {
+                inventory.splice(index, 1);
+                alert("Product removed successfully!");
+                displayInventory();
+            } else {
+                alert("Product with this ID not found.");
+            }
+        }
+
+        function displayInventory() {
+            const tableBody = document.querySelector("#inventoryTable tbody");
+            tableBody.innerHTML = ""; // Clear the table
+
+            inventory.forEach(product => {
+                const row = document.createElement("tr");
+
+                row.innerHTML = `
+                    <td>${product.id}</td>
+                    <td>${product.name}</td>
+                    <td>${product.quantity}</td>
+                    <td>${product.price.toFixed(2)}</td>
+                `;
+
+                tableBody.appendChild(row);
+            });
+        }
+    </script>
+</body>
+</html>
